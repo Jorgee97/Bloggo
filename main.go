@@ -9,6 +9,8 @@ func main() {
 
 	router := src.NewRouter()
 
+	router.HandleFunc("POST", "/signup", src.SingUp)
+	router.HandleFunc("POST", "/login", src.Login)
 	router.HandleFunc("GET", "/blog/:title", src.GetArticleByTitle)
 	router.HandleFunc("PUT", "/blog/:title", src.UpdateArticleByTitle)
 	router.HandleFunc("DELETE", "/blog/:title", src.DeleteArticleByTitle)
