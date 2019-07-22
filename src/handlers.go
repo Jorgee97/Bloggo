@@ -36,7 +36,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-var jwtKey = []byte("donotinvademything")
+var JwtKey = []byte("donotinvademything")
 
 var DBConnection *mongo.Client
 var ArticleCollection *mongo.Collection
@@ -110,7 +110,7 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -225,19 +225,19 @@ func UpdateArticleById(w http.ResponseWriter, r *http.Request) {
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{"_id",  objId}}
 
-	var newArticle Article
+	var article Article
 	post, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Request wasn't well formated", 400)
 		return
 	}
 
-	if err = json.Unmarshal(post, &newArticle); err != nil {
+	if err = json.Unmarshal(post, &article); err != nil {
 		http.Error(w, "Request wasn't well formated", 400)
 		return
 	}
 
-	doc := ArticleCollection.FindOneAndUpdate(context.TODO(), filter, bson.M{"$set": newArticle})
+	doc := ArticleCollection.FindOneAndUpdate(context.TODO(), filter, bson.M{"$set": article})
 	if doc.Err() != nil {
 		http.Error(w, "We couldn't update the item, sorry for the inconvenience.", 500)
 		return

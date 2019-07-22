@@ -2,7 +2,6 @@ package src
 
 import (
 	"context"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
@@ -25,7 +24,7 @@ func JWTAuthentication(next http.Handler) http.Handler {
 		claims := &Claims{}
 
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (i interface{}, e error) {
-			return []byte("donotinvademything"), nil
+			return JwtKey, nil
 		})
 
 		if err != nil {
@@ -45,10 +44,6 @@ func JWTAuthentication(next http.Handler) http.Handler {
 		}
 
 		ctx := context.WithValue(r.Context(), "username", claims.Username)
-		r = r.WithContext(ctx)
-
-		fmt.Println(ctx)
-
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
