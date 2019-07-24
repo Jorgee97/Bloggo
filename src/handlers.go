@@ -36,6 +36,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// TODO: This must be an Environment variable
 var JwtKey = []byte("donotinvademything")
 
 var DBConnection *mongo.Client
@@ -60,11 +61,19 @@ func init()  {
 	UserCollection = DBConnection.Database("personalweb").Collection("users")
 }
 
-// TODO: validate when creating a new user, that the username hasn't been taken.
 func SingUp(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Validating non existence of the new user
+	filter := bson.D{{"username", user.Username}}
+	exist, _ := UserCollection.CountDocuments(context.TODO(), filter)
+	if exist > 0 {
+		http.Error(w, "An user with that username already exist.", http.StatusConflict)
+		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
@@ -185,19 +194,19 @@ func PostArticle(w http.ResponseWriter, r *http.Request) {
 
 	post, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Request wasn't well formated", 400)
+		http.Error(w, "Request wasn't well formated", http.StatusBadRequest)
 		return
 	}
 
 	if err := json.Unmarshal(post, &newArticle); err != nil {
-		http.Error(w, "Request wasn't well formated", 400)
+		http.Error(w, "Request wasn't well formated", http.StatusBadRequest)
 		return
 	}
 
 	newArticle.Username = username
 	_, err = ArticleCollection.InsertOne(context.TODO(), newArticle)
 	if err != nil {
-		http.Error(w, "Internal error, We couldn't insert the new post to the db.", 500)
+		http.Error(w, "Internal error, We couldn't insert the new post to the db.", http.StatusInternalServerError)
 		return
 	}
 }
@@ -223,7 +232,8 @@ func GetArticleById(w http.ResponseWriter, r *http.Request) {
 func UpdateArticleById(w http.ResponseWriter, r *http.Request) {
 	id := Param(r.Context(), "id")
 	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{"_id",  objId}}
+	username := r.Context().Value("username").(string)
+	filter := bson.D{{"_id",  objId}, { "username", username}}
 
 	var article Article
 	post, err := ioutil.ReadAll(r.Body)
@@ -237,6 +247,7 @@ func UpdateArticleById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	article.Username = username
 	doc := ArticleCollection.FindOneAndUpdate(context.TODO(), filter, bson.M{"$set": article})
 	if doc.Err() != nil {
 		http.Error(w, "We couldn't update the item, sorry for the inconvenience.", 500)
@@ -247,7 +258,8 @@ func UpdateArticleById(w http.ResponseWriter, r *http.Request) {
 func DeleteArticleById(w http.ResponseWriter, r *http.Request) {
 	id := Param(r.Context(), "id")
 	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{"_id",  objId}}
+	username := r.Context().Value("username").(string)
+	filter := bson.D{{"_id",  objId}, { "username", username}}
 
 	_, err := ArticleCollection.DeleteOne(context.TODO(), filter)
 	if err != nil {

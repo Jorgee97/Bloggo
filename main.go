@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/jorgee97/goblogmicro/src"
+	"github.com/jorgee97/bloggo/src"
 	"net/http"
 )
 
