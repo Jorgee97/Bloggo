@@ -18,6 +18,7 @@ A little Blog API written in Go
 | DELETE      | /blog/:id                | Delete a blog by its respective ID                             |
 | POST        | /blog                    | Create a new post                                              |
 | GET         | /blog                    | Retrieves all posts from all users that are not private        |
+| GET         | /blog/dashboard          | Retrieves all posts from an authenticated user                 |
 
 # Notes on the implementation
 1. This is not a production ready blog service, it may contain bugs and as it is my first go project it may not be well structured.
