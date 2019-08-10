@@ -188,6 +188,35 @@ func GetArticlesByUsername(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetArticlesByUsernamePrivate(w http.ResponseWriter, r *http.Request) {
+	authenticatedUsername := r.Context().Value("username").(string)
+
+	filter := bson.D{{"username", authenticatedUsername}}
+	var articles []*Article
+	cur, err := ArticleCollection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cur.Close(context.TODO())
+	for cur.Next(context.TODO()) {
+		var article Article
+		err := cur.Decode(&article)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		articles = append(articles, &article)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := json.NewEncoder(w).Encode(articles); err != nil {
+		panic("Error.")
+	}
+}
+
 func PostArticle(w http.ResponseWriter, r *http.Request) {
 	var newArticle Article
 	username := r.Context().Value("username").(string)

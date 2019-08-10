@@ -22,14 +22,16 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../bloggo/src/handlers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="38" column="39" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="39" />
+            <state relative-caret-position="-890">
+              <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
               <folding>
                 <element signature="n#!!block;n#init#0" />
                 <element signature="n#!!block;n#SingUp#0" />
                 <element signature="n#!!block;n#GetAllArticles#0" />
                 <element signature="n#!!block;n#GetArticlesByUsername#0" />
                 <element signature="n#!!block;n#PostArticle#0" />
+                <element signature="n#!!block;n#UpdateArticleById#0" />
+                <element signature="n#!!block;n#DeleteArticleById#0" />
               </folding>
             </state>
           </provider>
@@ -378,14 +380,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../bloggo/src/handlers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="38" column="39" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="39" />
+        <state relative-caret-position="-890">
+          <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
           <folding>
             <element signature="n#!!block;n#init#0" />
             <element signature="n#!!block;n#SingUp#0" />
             <element signature="n#!!block;n#GetAllArticles#0" />
             <element signature="n#!!block;n#GetArticlesByUsername#0" />
             <element signature="n#!!block;n#PostArticle#0" />
+            <element signature="n#!!block;n#UpdateArticleById#0" />
+            <element signature="n#!!block;n#DeleteArticleById#0" />
           </folding>
         </state>
       </provider>

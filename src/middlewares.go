@@ -3,7 +3,6 @@ package src
 import (
 	"context"
 	"github.com/dgrijalva/jwt-go"
-	"log"
 	"net/http"
 )
 
@@ -34,7 +33,6 @@ func JWTAuthentication(next http.Handler) http.Handler {
 				return
 			}
 			w.WriteHeader(http.StatusBadRequest)
-			log.Fatal(err)
 			return
 		}
 
