@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/jorgee97/bloggo/src"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"time"
@@ -23,9 +24,18 @@ func main() {
 	router.Handle("POST", "/blog/", src.JWTAuthentication(http.HandlerFunc(src.PostArticle)))
 	router.HandleFunc("GET", "/blog/", src.GetAllArticles)
 
+	// Need to review this CORS setup
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost"},
+		AllowCredentials: true,
+		Debug: true,
+	})
+
+	handler := c.Handler(router)
+
 	s := &http.Server{
 		Addr:           ":8080",
-		Handler:        router,
+		Handler:        handler,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,

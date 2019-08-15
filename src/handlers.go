@@ -127,8 +127,10 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 
 	http.SetCookie(w, &http.Cookie{
 		Name: "authentication",
+		Domain: ".localhost",
 		Value: tokenString,
 		Expires: expireTime,
+		Path: "/",
 	})
 }
 
